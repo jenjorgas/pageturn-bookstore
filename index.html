@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageTurn — Order Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #2C4A3E;
+  --red-dark: #1a2e26;
+  --yellow: #C9A84C;
+  --yellow-dark: #a8882e;
+  --yellow-light: #f5f0e0;
+  --bg: #f5f0e8;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --text2: #555;
+  --text3: #999;
+  --card-bg: #fff;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.14);
+  --bebas: 'Bebas Neue', sans-serif;
+  --nunito: 'Nunito', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--nunito); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.navbar {
+  background: var(--red);
+  padding: 0 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(44,74,62,0.4);
+}
+.logo { font-family: var(--bebas); font-size: 32px; color: var(--yellow); letter-spacing: 2px; cursor: pointer; }
+.logo span { color: #fff; }
+.nav-tagline { color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; }
+.nav-cart-btn {
+  background: var(--yellow); color: var(--red-dark);
+  border: none; border-radius: 50px; padding: 10px 20px;
+  font-family: var(--nunito); font-weight: 800; font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: background 0.15s, transform 0.1s;
+}
+.nav-cart-btn:hover { background: var(--yellow-dark); }
+.nav-cart-btn:active { transform: scale(0.97); }
+.cart-count {
+  background: var(--red-dark); color: #fff;
+  border-radius: 50%; width: 20px; height: 20px;
+  font-size: 11px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--red) 0%, #1a2e26 100%);
+  padding: 48px 32px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 0, transparent 50%);
+  background-size: 20px 20px;
+}
+.hero-title { font-family: var(--bebas); font-size: 72px; color: var(--yellow); line-height: 0.9; letter-spacing: 3px; position: relative; }
+.hero-sub { color: rgba(255,255,255,0.9); font-size: 16px; font-weight: 700; margin-top: 10px; position: relative; letter-spacing: 0.05em; }
+.hero-badge {
+  display: inline-block; background: var(--yellow); color: var(--red-dark);
+  font-family: var(--bebas); font-size: 15px; letter-spacing: 1px;
+  padding: 5px 16px; border-radius: 50px; margin-top: 14px; position: relative;
+}
+
+.cat-bar {
+  background: var(--white); border-bottom: 2px solid #eee;
+  padding: 0 32px;
+  display: flex; gap: 4px; overflow-x: auto;
+  position: sticky; top: 64px; z-index: 90;
+}
+.cat-bar::-webkit-scrollbar { height: 0; }
+.cat-btn {
+  padding: 14px 20px; border: none; background: none;
+  font-family: var(--nunito); font-weight: 700; font-size: 13px;
+  color: var(--text2); cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  white-space: nowrap; transition: color 0.15s, border-color 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.cat-btn:hover { color: var(--red); }
+.cat-btn.active { color: var(--red); border-bottom-color: var(--red); }
+
+.main { display: grid; grid-template-columns: 1fr 360px; gap: 0; max-width: 1300px; margin: 0 auto; padding: 32px 32px 80px; }
+
+.menu-area { padding-right: 32px; }
+.section-label {
+  font-family: var(--bebas); font-size: 28px; color: var(--red);
+  letter-spacing: 2px; margin: 28px 0 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::after { content: ''; flex: 1; height: 2px; background: var(--yellow); border-radius: 2px; }
+
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+
+.item-card {
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  cursor: pointer; transition: transform 0.18s, box-shadow 0.18s;
+  border: 2px solid transparent;
+  position: relative;
+}
+.item-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+.item-card.out-of-stock { opacity: 0.5; cursor: not-allowed; }
+.item-card.out-of-stock:hover { transform: none; box-shadow: var(--shadow); }
+
+.item-img {
+  width: 100%; height: 140px;
+  background: var(--yellow-light);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
+}
+.item-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.item-img .img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #b0a898; }
+.item-img .img-placeholder svg { width: 32px; height: 32px; opacity: 0.45; }
+.item-img .img-placeholder span { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.55; }
+
+.item-info { padding: 12px 14px 14px; }
+.item-author { font-size: 10px; font-weight: 700; color: var(--yellow-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+.item-name { font-weight: 800; font-size: 14px; line-height: 1.3; }
+.item-desc { font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.4; }
+.item-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.item-price { font-family: var(--bebas); font-size: 20px; color: var(--red); letter-spacing: 1px; }
+.item-stock { font-size: 10px; font-weight: 700; color: var(--text3); }
+.item-stock.low { color: #e67e22; }
+.add-btn {
+  background: var(--red); color: #fff;
+  border: none; border-radius: 50%; width: 32px; height: 32px;
+  font-size: 20px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.1s; flex-shrink: 0;
+}
+.add-btn:hover { background: var(--red-dark); }
+.add-btn:active { transform: scale(0.9); }
+
+.sold-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: #333; color: #fff;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.05em;
+  padding: 3px 8px; border-radius: 50px; z-index: 1;
+}
+
+.cart-panel {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); height: fit-content;
+  position: sticky; top: 120px; overflow: hidden;
+  border: 2px solid #f0e8d0;
+}
+.cart-header { background: var(--yellow); padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+.cart-header-title { font-family: var(--bebas); font-size: 22px; color: var(--red-dark); letter-spacing: 2px; flex: 1; }
+.cart-header-icon { font-size: 22px; }
+
+.cart-empty { padding: 40px 20px; text-align: center; color: var(--text3); font-weight: 700; font-size: 13px; }
+.cart-empty-icon { font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.4; }
+
+.cart-items { padding: 8px 0; max-height: 340px; overflow-y: auto; }
+.cart-items::-webkit-scrollbar { width: 4px; }
+.cart-items::-webkit-scrollbar-track { background: #f5f5f5; }
+.cart-items::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+.cart-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; border-bottom: 1px solid #f5f5f5;
+  animation: slideIn 0.2s ease;
+}
+@keyframes slideIn { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
+.cart-row:last-child { border-bottom: none; }
+
+.cart-item-thumb {
+  width: 36px; height: 48px; border-radius: 4px; overflow: hidden;
+  background: var(--yellow-light); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.cart-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cart-thumb-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.cart-thumb-ph svg { width: 16px; height: 16px; opacity: 0.3; }
+
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-weight: 800; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-price { font-size: 12px; color: var(--red); font-weight: 700; }
+.qty-controls { display: flex; align-items: center; gap: 6px; }
+.qty-btn {
+  background: #f0f0f0; border: none; border-radius: 50%;
+  width: 24px; height: 24px; font-size: 14px; font-weight: 800;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s;
+}
+.qty-btn:hover { background: #e0e0e0; }
+.qty-num { font-weight: 800; font-size: 13px; min-width: 16px; text-align: center; }
+
+.cart-divider { border: none; border-top: 1px solid #eee; margin: 0 20px; }
+.cart-summary { padding: 14px 20px; }
+.cart-summary-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.cart-summary-row.total { font-weight: 900; font-size: 16px; color: var(--text); margin-top: 8px; padding-top: 8px; border-top: 2px solid #eee; }
+
+.order-btn {
+  margin: 4px 20px 16px; width: calc(100% - 40px);
+  background: var(--red); color: #fff; border: none; border-radius: 50px;
+  font-family: var(--nunito); font-weight: 900; font-size: 16px; padding: 14px;
+  cursor: pointer; transition: background 0.15s, transform 0.1s; letter-spacing: 0.03em;
+}
+.order-btn:hover { background: var(--red-dark); }
+.order-btn:active { transform: scale(0.98); }
+.order-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55); z-index: 999;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #fff; border-radius: 20px;
+  width: 480px; max-width: 95vw;
+  overflow: hidden; animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
+.modal-header { background: var(--red); padding: 20px 24px; }
+.modal-title { font-family: var(--bebas); font-size: 26px; color: var(--yellow); letter-spacing: 2px; }
+.modal-sub { color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600; margin-top: 2px; }
+.modal-body { padding: 20px 24px; max-height: 60vh; overflow-y: auto; }
+.modal-section-title { font-weight: 800; font-size: 13px; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+.xml-block {
+  background: #1a1a2e; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+  font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.8;
+  overflow-x: auto; color: #e2e8f0;
+}
+.xml-tag { color: #60a5fa; }
+.xml-val { color: #4ade80; }
+.step-flow { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.step-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 10px; border: 1.5px solid #eee; font-size: 13px;
+}
+.step-row.success { border-color: #4ade80; background: #f0fdf4; }
+.step-row.failed  { border-color: #f87171; background: #fef2f2; }
+.step-row.pending { border-color: #fbbf24; background: #fffbeb; }
+.step-icon { font-size: 18px; }
+.step-info { flex: 1; }
+.step-name   { font-weight: 800; font-size: 12px; }
+.step-detail { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.step-status { font-size: 11px; font-weight: 700; }
+.status-ok      { color: #16a34a; }
+.status-fail    { color: #dc2626; }
+.status-pending { color: #d97706; }
+
+.modal-footer { padding: 16px 24px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; }
+.btn-close {
+  background: var(--red); color: #fff; border: none; border-radius: 50px; padding: 11px 28px;
+  font-family: var(--nunito); font-weight: 800; font-size: 14px;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-close:hover { background: var(--red-dark); }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: #1a1a1a; color: #fff; padding: 12px 24px; border-radius: 50px;
+  font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 9999; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.footer { background: var(--red); color: rgba(255,255,255,0.75); text-align: center; padding: 16px; font-size: 12px; font-weight: 600; }
+.footer span { color: var(--yellow); }
+
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; padding: 16px; }
+  .menu-area { padding-right: 0; }
+  .cart-panel { position: static; }
+  .hero-title { font-size: 52px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">Page<span>Turn</span></div>
+  <div class="nav-tagline">📚 FREE SHIPPING ON ORDERS ₱599+</div>
+  <button class="nav-cart-btn" onclick="scrollToCart()">
+    🛒 My Cart
+    <span class="cart-count" id="cart-count">0</span>
+  </button>
+</nav>
+
+<div class="hero">
+  <div class="hero-title">Order Online.<br>Read More.</div>
+  <div class="hero-sub">Curated books. Fast delivery. Ready to read.</div>
+  <div class="hero-badge">📖 NEW ARRIVALS EVERY WEEK</div>
+</div>
+
+<div class="cat-bar" id="cat-bar">
+  <button class="cat-btn active" onclick="filterCat('all', this)">📚 All Books</button>
+  <button class="cat-btn" onclick="filterCat('fiction', this)">📖 Fiction</button>
+  <button class="cat-btn" onclick="filterCat('nonfiction', this)">🧠 Non-Fiction</button>
+  <button class="cat-btn" onclick="filterCat('scifi', this)">🚀 Sci-Fi</button>
+  <button class="cat-btn" onclick="filterCat('mystery', this)">🔍 Mystery</button>
+  <button class="cat-btn" onclick="filterCat('selfhelp', this)">💡 Self-Help</button>
+  <button class="cat-btn" onclick="filterCat('classics', this)">🏛️ Classics</button>
+  <button class="cat-btn" onclick="filterCat('bundles', this)">🎁 Bundles</button>
+</div>
+
+<div class="main">
+  <div class="menu-area" id="menu-area"></div>
+  <div class="cart-panel" id="cart-panel">
+    <div class="cart-header">
+      <span class="cart-header-icon">🛒</span>
+      <div class="cart-header-title">Your Cart</div>
+    </div>
+    <div id="cart-body">
+      <div class="cart-empty" id="cart-empty">
+        <span class="cart-empty-icon">📚</span>
+        Add books to start your order!
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Processing Order...</div>
+      <div class="modal-sub" id="modal-sub">Talking to our services via XML</div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-close" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+  © 2025 <span>PageTurn</span> · Powered by XML Service-Oriented Architecture · Built for 🇵🇭
+</footer>
+
+<script>
+const ORDER_URL = 'http://127.0.0.1:5000/place_order';
+
+const MENU = [
+  { id:'101', cat:'fiction',    author:'Gabriel García Márquez', name:'One Hundred Years of Solitude', desc:'A masterpiece of magical realism spanning seven generations.',               price:349, image:'images/100years.jpg',      stock:12 },
+  { id:'102', cat:'fiction',    author:'Toni Morrison',          name:'Beloved',                        desc:'A haunting story of a formerly enslaved woman in post-Civil War Ohio.',     price:299, image:'images/beloved.jpg',        stock:7  },
+  { id:'103', cat:'fiction',    author:'Kazuo Ishiguro',         name:'Never Let Me Go',                desc:'A quiet, devastating story about love, loss, and what it means to be human.',price:329, image:'images/neverlletmego.jpg', stock:5  },
+  { id:'104', cat:'fiction',    author:'Donna Tartt',            name:'The Secret History',             desc:'A dark and gripping novel of obsession, beauty, and moral decay.',           price:369, image:'images/secrethistory.jpg', stock:0  },
+  { id:'201', cat:'nonfiction', author:'Yuval Noah Harari',      name:'Sapiens',                        desc:'A brief history of humankind from the Stone Age to the present.',            price:399, image:'images/sapiens.jpg',        stock:18 },
+  { id:'202', cat:'nonfiction', author:'Michelle Obama',         name:'Becoming',                       desc:'An intimate memoir by the former First Lady of the United States.',           price:449, image:'images/becoming.jpg',       stock:9  },
+  { id:'203', cat:'nonfiction', author:'Viktor Frankl',          name:"Man's Search for Meaning",       desc:'A psychiatrist survives the Holocaust and finds purpose in suffering.',        price:279, image:'images/mansearch.jpg',      stock:4  },
+  { id:'301', cat:'scifi',      author:'Frank Herbert',          name:'Dune',                           desc:'The greatest science fiction novel ever written. Epic and timeless.',          price:419, image:'images/dune.jpg',           stock:14 },
+  { id:'302', cat:'scifi',      author:'Isaac Asimov',           name:'Foundation',                     desc:"The fall of a galactic empire and one man's plan to shorten the dark age.",   price:359, image:'images/foundation.jpg',     stock:8  },
+  { id:'303', cat:'scifi',      author:'Andy Weir',              name:'The Martian',                    desc:'An astronaut stranded on Mars uses science to survive.',                      price:329, image:'images/martian.jpg',        stock:0  },
+  { id:'401', cat:'mystery',    author:'Agatha Christie',        name:'And Then There Were None',       desc:'Ten strangers lured to an island — one by one they disappear.',               price:249, image:'images/andthen.jpg',        stock:20 },
+  { id:'402', cat:'mystery',    author:'Gillian Flynn',          name:'Gone Girl',                      desc:'A marriage gone terribly wrong. A story that keeps you guessing.',             price:299, image:'images/gonegirl.jpg',       stock:6  },
+  { id:'501', cat:'selfhelp',   author:'James Clear',            name:'Atomic Habits',                  desc:'Tiny changes, remarkable results. The science of building good habits.',       price:379, image:'images/atomichabits.jpg',   stock:22 },
+  { id:'502', cat:'selfhelp',   author:'Mark Manson',            name:'The Subtle Art',                 desc:'A counterintuitive approach to living a good life.',                           price:319, image:'images/subtleart.jpg',      stock:11 },
+  { id:'503', cat:'selfhelp',   author:'Cal Newport',            name:'Deep Work',                      desc:'Rules for focused success in a distracted world.',                             price:349, image:'images/deepwork.jpg',       stock:0  },
+  { id:'601', cat:'classics',   author:'Leo Tolstoy',            name:'Anna Karenina',                  desc:'A tragic love story set in Russian high society.',                             price:289, image:'images/annakarenina.jpg',   stock:10 },
+  { id:'602', cat:'classics',   author:'F. Scott Fitzgerald',    name:'The Great Gatsby',               desc:'The American dream, jazz, and obsession in the 1920s.',                       price:229, image:'images/gatsby.jpg',         stock:15 },
+  { id:'701', cat:'bundles',    author:'PageTurn Collection',    name:'Starter Fiction Bundle',         desc:'100 Years + Beloved + Never Let Me Go. Save ₱150.',                          price:849, image:'images/fictionbundle.jpg',  stock:6  },
+  { id:'702', cat:'bundles',    author:'PageTurn Collection',    name:'Mind & Growth Bundle',           desc:'Sapiens + Atomic Habits + Deep Work. Feed your mind.',                         price:999, image:'images/growthbundle.jpg',   stock:3  },
+];
+
+const inventory = {};
+MENU.forEach(item => inventory[item.id] = item.stock);
+
+let cart = {};
+let currentCat = 'all';
+
+const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="width:32px;height:32px;opacity:0.4"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>`;
+
+function itemImageHTML(item) {
+  if (item.image) {
+    return `<img src="${item.image}" alt="${item.name}"
+      onload="this.style.opacity=1"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+      style="opacity:0;transition:opacity 0.3s;width:100%;height:100%;object-fit:cover;display:block">
+      <div class="img-placeholder" style="display:none;flex-direction:column;align-items:center;gap:6px">
+        ${BOOK_ICON}<span>No Cover</span>
+      </div>`;
+  }
+  return `<div class="img-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:6px">${BOOK_ICON}<span>No Cover</span></div>`;
+}
+
+function cartThumbHTML(item) {
+  if (item.image) {
+    return `<div class="cart-item-thumb">
+      <img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;display:block"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="cart-thumb-ph" style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#b0a898" stroke-width="1.2" style="width:14px;height:14px"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+    </div>`;
+  }
+  return `<div class="cart-item-thumb"><div class="cart-thumb-ph" style="display:flex;width:100%;height:100%;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="#b0a898" stroke-width="1.2" style="width:14px;height:14px"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div></div>`;
+}
+
+function renderMenu(cat = 'all') {
+  const area = document.getElementById('menu-area');
+  const cats = cat === 'all' ? [...new Set(MENU.map(i => i.cat))] : [cat];
+  const catLabels = { fiction:'📖 Fiction', nonfiction:'🧠 Non-Fiction', scifi:'🚀 Science Fiction', mystery:'🔍 Mystery & Thriller', selfhelp:'💡 Self-Help', classics:'🏛️ Classics', bundles:'🎁 Book Bundles' };
+
+  area.innerHTML = cats.map(c => {
+    const items = MENU.filter(i => i.cat === c);
+    if (!items.length) return '';
+    return `
+      <div class="section-label">${catLabels[c]}</div>
+      <div class="menu-grid">
+        ${items.map(item => {
+          const stock = inventory[item.id];
+          const out = stock === 0;
+          const low = stock > 0 && stock <= 5;
+          return `
+            <div class="item-card${out ? ' out-of-stock' : ''}" onclick="${out ? '' : `addToCart('${item.id}')`}">
+              ${out ? '<div class="sold-badge">OUT OF STOCK</div>' : ''}
+              <div class="item-img">${itemImageHTML(item)}</div>
+              <div class="item-info">
+                <div class="item-author">${item.author}</div>
+                <div class="item-name">${item.name}</div>
+                <div class="item-desc">${item.desc}</div>
+                <div class="item-footer">
+                  <div>
+                    <div class="item-price">₱${item.price}</div>
+                    <div class="item-stock${low ? ' low' : ''}">${out ? 'Out of stock' : low ? `Only ${stock} left!` : `${stock} available`}</div>
+                  </div>
+                  ${out ? '' : `<button class="add-btn" onclick="event.stopPropagation();addToCart('${item.id}')">+</button>`}
+                </div>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
+  }).join('');
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMenu(cat);
+}
+
+function addToCart(id) {
+  const item = MENU.find(i => i.id === id);
+  const stock = inventory[id];
+  const inCart = cart[id] ? cart[id].qty : 0;
+  if (inCart >= stock) { showToast('⚠️ Not enough stock!'); return; }
+  if (!cart[id]) cart[id] = { ...item, qty: 0 };
+  cart[id].qty++;
+  renderCart();
+  showToast(`🛒 ${item.name} added!`);
+}
+
+function changeQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id].qty += delta;
+  if (cart[id].qty <= 0) delete cart[id];
+  renderCart();
+}
+
+function renderCart() {
+  const body = document.getElementById('cart-body');
+  const keys = Object.keys(cart);
+  document.getElementById('cart-count').textContent = keys.reduce((s, k) => s + cart[k].qty, 0);
+
+  if (!keys.length) {
+    body.innerHTML = `<div class="cart-empty"><span class="cart-empty-icon">📚</span>Add books to start your order!</div>`;
+    return;
+  }
+
+  const subtotal = keys.reduce((s, k) => s + cart[k].price * cart[k].qty, 0);
+  const tax = Math.round(subtotal * 0.12);
+  const total = subtotal + tax;
+
+  body.innerHTML = `
+    <div class="cart-items">
+      ${keys.map(k => `
+        <div class="cart-row">
+          ${cartThumbHTML(cart[k])}
+          <div class="cart-item-info">
+            <div class="cart-item-name">${cart[k].name}</div>
+            <div class="cart-item-price">₱${(cart[k].price * cart[k].qty).toLocaleString()}</div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty('${k}', -1)">−</button>
+            <span class="qty-num">${cart[k].qty}</span>
+            <button class="qty-btn" onclick="changeQty('${k}', 1)">+</button>
+          </div>
+        </div>`).join('')}
+    </div>
+    <hr class="cart-divider">
+    <div class="cart-summary">
+      <div class="cart-summary-row"><span>Subtotal</span><span>₱${subtotal.toLocaleString()}</span></div>
+      <div class="cart-summary-row"><span>VAT (12%)</span><span>₱${tax.toLocaleString()}</span></div>
+      <div class="cart-summary-row total"><span>Total</span><span>₱${total.toLocaleString()}</span></div>
+    </div>
+    <button class="order-btn" onclick="placeOrder()">🛒 Place Order →</button>`;
+}
+
+async function placeOrder() {
+  const keys = Object.keys(cart);
+  if (!keys.length) return;
+
+  // Show loading modal
+  document.getElementById('modal-title').textContent = '⏳ Processing...';
+  document.getElementById('modal-sub').textContent = 'Sending XML to your Flask services';
+  document.getElementById('modal-body').innerHTML = `<div style="text-align:center;padding:40px 0;color:#888;font-weight:700"><span class="spinner"></span> Contacting services...</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+
+  // Build one order per cart item and send all
+  const results = [];
+  for (const k of keys) {
+    const item = cart[k];
+    const totalAmt = item.price * item.qty;
+    const orderXML = `<Order><ProductID>${item.id}</ProductID><Quantity>${item.qty}</Quantity><TotalAmount>${totalAmt}</TotalAmount></Order>`;
+
+    let success = false;
+    let invStatus = 'Failed';
+    let payStatus = 'Skipped';
+    let errorMsg = '';
+
+    try {
+      const resp = await fetch(ORDER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/xml' },
+        body: orderXML
+      });
+      const text = await resp.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'application/xml');
+
+      const status = xml.querySelector('Status');
+      if (status) {
+        const val = status.textContent;
+        if (val === 'Success') {
+          invStatus = 'Success';
+          payStatus = 'Success';
+          success = true;
+          inventory[item.id] = Math.max(0, inventory[item.id] - item.qty);
+        } else {
+          invStatus = 'Failed';
+          const msg = xml.querySelector('Message');
+          errorMsg = msg ? msg.textContent : 'Unknown error';
+        }
+      }
+    } catch (err) {
+      errorMsg = 'Could not connect to Flask server. Is it running?';
+    }
+
+    results.push({ item, success, invStatus, payStatus, errorMsg, totalAmt });
+  }
+
+  const allSuccess = results.every(r => r.success);
+  const firstResult = results[0];
+
+  // Build modal content
+  const orderXMLDisplay = `<Order>\n  <ProductID>${firstResult.item.id}</ProductID>\n  <Quantity>${firstResult.item.qty}</Quantity>\n  <TotalAmount>${firstResult.totalAmt}</TotalAmount>\n</Order>`;
+
+  const steps = firstResult.success ? [
+    { icon:'🏪', name:'Order Service :5000',     detail:'/place_order — XML received & saved to DB',                              status:'success', statusText:'Saved to DB'   },
+    { icon:'📦', name:'Inventory Service :5001',  detail:`/update_inventory — deducted ${firstResult.item.qty} unit(s) from DB`,  status:'success', statusText:'Stock Updated' },
+    { icon:'💳', name:'Payment Service :5002',    detail:`/process_payment — ₱${firstResult.totalAmt.toLocaleString()} saved to DB`, status:'success', statusText:'Payment Saved'},
+    { icon:'✅', name:'Order Confirmed!',          detail:'All 3 services saved data to MySQL successfully',                        status:'success', statusText:'Complete'      },
+  ] : [
+    { icon:'🏪', name:'Order Service :5000',     detail:'/place_order — XML received',                         status:'success', statusText:'Received' },
+    { icon:'📦', name:'Inventory Service :5001',  detail: firstResult.errorMsg || 'Insufficient stock',         status:'failed',  statusText:'Failed'   },
+    { icon:'💳', name:'Payment Service :5002',    detail:'Skipped — inventory check failed',                    status:'pending', statusText:'Skipped'  },
+    { icon:'❌', name:'Order Failed',             detail: firstResult.errorMsg || 'Check your Flask terminals', status:'failed',  statusText:'Failed'   },
+  ];
+
+  document.getElementById('modal-title').textContent = allSuccess ? '📚 Order Placed!' : '❌ Order Failed';
+  document.getElementById('modal-sub').textContent   = allSuccess
+    ? 'Data saved to MySQL via XML services ✓'
+    : 'One or more services returned an error';
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-section-title">XML Request Sent</div>
+    <div class="xml-block">${colorXML(orderXMLDisplay)}</div>
+    <div class="modal-section-title">Service Flow</div>
+    <div class="step-flow">
+      ${steps.map((s, i) => `
+        <div class="step-row ${s.status}" style="animation-delay:${i*0.1}s">
+          <span class="step-icon">${s.icon}</span>
+          <div class="step-info">
+            <div class="step-name">${s.name}</div>
+            <div class="step-detail">${s.detail}</div>
+          </div>
+          <span class="step-status status-${s.status === 'success' ? 'ok' : s.status === 'failed' ? 'fail' : 'pending'}">${s.statusText}</span>
+        </div>`).join('')}
+    </div>`;
+
+  if (allSuccess) {
+    cart = {};
+    renderCart();
+    renderMenu(currentCat);
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function colorXML(raw) {
+  return raw
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/&lt;(\/?[\w]+)&gt;/g, '<span class="xml-tag">&lt;$1&gt;</span>')
+    .replace(/&gt;([^&<\n]+)&lt;\//g, (m, v) => `&gt;<span class="xml-val">${v}</span>&lt;/`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function scrollToCart() {
+  document.getElementById('cart-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+renderMenu('all');
+</script>
+</body>
+</html>

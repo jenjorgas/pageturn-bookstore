@@ -70,4 +70,4 @@ if __name__ == '__main__':
             db.session.add(Product(product_id='701', stock=6))
             db.session.add(Product(product_id='702', stock=3))
             db.session.commit()
-    app.run(port=5001)
+    app.run(host='0.0.0.0', port=5001)

@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -5,7 +6,7 @@ import xml.etree.ElementTree as ET
 import requests
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/order_system'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql+pymysql://root:@127.0.0.1/order_system')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy()
@@ -19,8 +20,8 @@ class Order(db.Model):
     quantity = db.Column(db.Integer)
     total_amount = db.Column(db.Float)
 
-INVENTORY_URL = 'http://127.0.0.1:5001/update_inventory'
-PAYMENT_URL   = 'http://127.0.0.1:5002/process_payment'
+INVENTORY_URL = os.environ.get('INVENTORY_URL', 'http://127.0.0.1:5001/update_inventory')
+PAYMENT_URL   = os.environ.get('PAYMENT_URL', 'http://127.0.0.1:5002/process_payment')
 
 @app.route('/')
 def index():

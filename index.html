@@ -118,7 +118,7 @@ body { font-family: var(--nunito); background: var(--bg); color: var(--text); mi
 .item-card.out-of-stock:hover { transform: none; box-shadow: var(--shadow); }
 
 .item-img {
-  width: 100%; height: 140px;
+  width: 100%; height: 200px;
   background: var(--yellow-light);
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; flex-shrink: 0;
@@ -353,28 +353,29 @@ body { font-family: var(--nunito); background: var(--bg); color: var(--text); mi
 </footer>
 
 <script>
-const ORDER_URL = 'http://127.0.0.1:5000/place_order';
+// ✅ Updated to use live Render backend URL
+const ORDER_URL = 'https://pageturn-order.onrender.com/place_order';
 
 const MENU = [
-  { id:'101', cat:'fiction',    author:'Gabriel García Márquez', name:'One Hundred Years of Solitude', desc:'A masterpiece of magical realism spanning seven generations.',               price:349, image:'images/100years.jpg',      stock:12 },
-  { id:'102', cat:'fiction',    author:'Toni Morrison',          name:'Beloved',                        desc:'A haunting story of a formerly enslaved woman in post-Civil War Ohio.',     price:299, image:'images/beloved.jpg',        stock:7  },
-  { id:'103', cat:'fiction',    author:'Kazuo Ishiguro',         name:'Never Let Me Go',                desc:'A quiet, devastating story about love, loss, and what it means to be human.',price:329, image:'images/neverlletmego.jpg', stock:5  },
-  { id:'104', cat:'fiction',    author:'Donna Tartt',            name:'The Secret History',             desc:'A dark and gripping novel of obsession, beauty, and moral decay.',           price:369, image:'images/secrethistory.jpg', stock:0  },
-  { id:'201', cat:'nonfiction', author:'Yuval Noah Harari',      name:'Sapiens',                        desc:'A brief history of humankind from the Stone Age to the present.',            price:399, image:'images/sapiens.jpg',        stock:18 },
-  { id:'202', cat:'nonfiction', author:'Michelle Obama',         name:'Becoming',                       desc:'An intimate memoir by the former First Lady of the United States.',           price:449, image:'images/becoming.jpg',       stock:9  },
-  { id:'203', cat:'nonfiction', author:'Viktor Frankl',          name:"Man's Search for Meaning",       desc:'A psychiatrist survives the Holocaust and finds purpose in suffering.',        price:279, image:'images/mansearch.jpg',      stock:4  },
-  { id:'301', cat:'scifi',      author:'Frank Herbert',          name:'Dune',                           desc:'The greatest science fiction novel ever written. Epic and timeless.',          price:419, image:'images/dune.jpg',           stock:14 },
-  { id:'302', cat:'scifi',      author:'Isaac Asimov',           name:'Foundation',                     desc:"The fall of a galactic empire and one man's plan to shorten the dark age.",   price:359, image:'images/foundation.jpg',     stock:8  },
-  { id:'303', cat:'scifi',      author:'Andy Weir',              name:'The Martian',                    desc:'An astronaut stranded on Mars uses science to survive.',                      price:329, image:'images/martian.jpg',        stock:0  },
-  { id:'401', cat:'mystery',    author:'Agatha Christie',        name:'And Then There Were None',       desc:'Ten strangers lured to an island — one by one they disappear.',               price:249, image:'images/andthen.jpg',        stock:20 },
-  { id:'402', cat:'mystery',    author:'Gillian Flynn',          name:'Gone Girl',                      desc:'A marriage gone terribly wrong. A story that keeps you guessing.',             price:299, image:'images/gonegirl.jpg',       stock:6  },
-  { id:'501', cat:'selfhelp',   author:'James Clear',            name:'Atomic Habits',                  desc:'Tiny changes, remarkable results. The science of building good habits.',       price:379, image:'images/atomichabits.jpg',   stock:22 },
-  { id:'502', cat:'selfhelp',   author:'Mark Manson',            name:'The Subtle Art',                 desc:'A counterintuitive approach to living a good life.',                           price:319, image:'images/subtleart.jpg',      stock:11 },
-  { id:'503', cat:'selfhelp',   author:'Cal Newport',            name:'Deep Work',                      desc:'Rules for focused success in a distracted world.',                             price:349, image:'images/deepwork.jpg',       stock:0  },
-  { id:'601', cat:'classics',   author:'Leo Tolstoy',            name:'Anna Karenina',                  desc:'A tragic love story set in Russian high society.',                             price:289, image:'images/annakarenina.jpg',   stock:10 },
-  { id:'602', cat:'classics',   author:'F. Scott Fitzgerald',    name:'The Great Gatsby',               desc:'The American dream, jazz, and obsession in the 1920s.',                       price:229, image:'images/gatsby.jpg',         stock:15 },
-  { id:'701', cat:'bundles',    author:'PageTurn Collection',    name:'Starter Fiction Bundle',         desc:'100 Years + Beloved + Never Let Me Go. Save ₱150.',                          price:849, image:'images/fictionbundle.jpg',  stock:6  },
-  { id:'702', cat:'bundles',    author:'PageTurn Collection',    name:'Mind & Growth Bundle',           desc:'Sapiens + Atomic Habits + Deep Work. Feed your mind.',                         price:999, image:'images/growthbundle.jpg',   stock:3  },
+  { id:'101', cat:'fiction',    author:'Gabriel García Márquez', name:'One Hundred Years of Solitude', desc:'A masterpiece of magical realism spanning seven generations.',               price:349, image:'https://covers.openlibrary.org/b/isbn/9780060931650-L.jpg',    stock:12 },
+  { id:'102', cat:'fiction',    author:'Toni Morrison',          name:'Beloved',                        desc:'A haunting story of a formerly enslaved woman in post-Civil War Ohio.',     price:299, image:'https://covers.openlibrary.org/b/isbn/9781400033416-L.jpg',      stock:7  },
+  { id:'103', cat:'fiction',    author:'Kazuo Ishiguro',         name:'Never Let Me Go',                desc:'A quiet, devastating story about love, loss, and what it means to be human.',price:329, image:'https://covers.openlibrary.org/b/isbn/9781400078776-L.jpg',      stock:5  },
+  { id:'104', cat:'fiction',    author:'Donna Tartt',            name:'The Secret History',             desc:'A dark and gripping novel of obsession, beauty, and moral decay.',           price:369, image:'https://covers.openlibrary.org/b/isbn/9781400031702-L.jpg',      stock:0  },
+  { id:'201', cat:'nonfiction', author:'Yuval Noah Harari',      name:'Sapiens',                        desc:'A brief history of humankind from the Stone Age to the present.',            price:399, image:'https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg',      stock:18 },
+  { id:'202', cat:'nonfiction', author:'Michelle Obama',         name:'Becoming',                       desc:'An intimate memoir by the former First Lady of the United States.',           price:449, image:'https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg',      stock:9  },
+  { id:'203', cat:'nonfiction', author:'Viktor Frankl',          name:"Man's Search for Meaning",       desc:'A psychiatrist survives the Holocaust and finds purpose in suffering.',        price:279, image:'https://covers.openlibrary.org/b/isbn/9780807014271-L.jpg',      stock:4  },
+  { id:'301', cat:'scifi',      author:'Frank Herbert',          name:'Dune',                           desc:'The greatest science fiction novel ever written. Epic and timeless.',          price:419, image:'https://covers.openlibrary.org/b/isbn/9780441013593-L.jpg',      stock:14 },
+  { id:'302', cat:'scifi',      author:'Isaac Asimov',           name:'Foundation',                     desc:"The fall of a galactic empire and one man's plan to shorten the dark age.",   price:359, image:'https://covers.openlibrary.org/b/isbn/9780553293357-L.jpg',      stock:8  },
+  { id:'303', cat:'scifi',      author:'Andy Weir',              name:'The Martian',                    desc:'An astronaut stranded on Mars uses science to survive.',                      price:329, image:'https://covers.openlibrary.org/b/isbn/9780553418026-L.jpg',      stock:0  },
+  { id:'401', cat:'mystery',    author:'Agatha Christie',        name:'And Then There Were None',       desc:'Ten strangers lured to an island — one by one they disappear.',               price:249, image:'https://covers.openlibrary.org/b/isbn/9780062073488-L.jpg',      stock:20 },
+  { id:'402', cat:'mystery',    author:'Gillian Flynn',          name:'Gone Girl',                      desc:'A marriage gone terribly wrong. A story that keeps you guessing.',             price:299, image:'https://covers.openlibrary.org/b/isbn/9780307588364-L.jpg',      stock:6  },
+  { id:'501', cat:'selfhelp',   author:'James Clear',            name:'Atomic Habits',                  desc:'Tiny changes, remarkable results. The science of building good habits.',       price:379, image:'https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg',      stock:22 },
+  { id:'502', cat:'selfhelp',   author:'Mark Manson',            name:'The Subtle Art',                 desc:'A counterintuitive approach to living a good life.',                           price:319, image:'https://covers.openlibrary.org/b/isbn/9780062457714-L.jpg',      stock:11 },
+  { id:'503', cat:'selfhelp',   author:'Cal Newport',            name:'Deep Work',                      desc:'Rules for focused success in a distracted world.',                             price:349, image:'https://covers.openlibrary.org/b/isbn/9781455586691-L.jpg',      stock:0  },
+  { id:'601', cat:'classics',   author:'Leo Tolstoy',            name:'Anna Karenina',                  desc:'A tragic love story set in Russian high society.',                             price:289, image:'https://covers.openlibrary.org/b/isbn/9780143035008-L.jpg',      stock:10 },
+  { id:'602', cat:'classics',   author:'F. Scott Fitzgerald',    name:'The Great Gatsby',               desc:'The American dream, jazz, and obsession in the 1920s.',                       price:229, image:'https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg',      stock:15 },
+  { id:'701', cat:'bundles',    author:'PageTurn Collection',    name:'Starter Fiction Bundle',         desc:'100 Years + Beloved + Never Let Me Go. Save ₱150.',                          price:849, image:'https://covers.openlibrary.org/b/isbn/9780060931650-L.jpg',      stock:6  },
+  { id:'702', cat:'bundles',    author:'PageTurn Collection',    name:'Mind & Growth Bundle',           desc:'Sapiens + Atomic Habits + Deep Work. Feed your mind.',                         price:999, image:'https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg',      stock:3  },
 ];
 
 const inventory = {};
@@ -516,13 +517,11 @@ async function placeOrder() {
   const keys = Object.keys(cart);
   if (!keys.length) return;
 
-  // Show loading modal
   document.getElementById('modal-title').textContent = '⏳ Processing...';
   document.getElementById('modal-sub').textContent = 'Sending XML to your Flask services';
   document.getElementById('modal-body').innerHTML = `<div style="text-align:center;padding:40px 0;color:#888;font-weight:700"><span class="spinner"></span> Contacting services...</div>`;
   document.getElementById('modal-overlay').classList.add('open');
 
-  // Build one order per cart item and send all
   const results = [];
   for (const k of keys) {
     const item = cart[k];
@@ -559,7 +558,7 @@ async function placeOrder() {
         }
       }
     } catch (err) {
-      errorMsg = 'Could not connect to Flask server. Is it running?';
+      errorMsg = 'Could not connect to Order service. Please try again.';
     }
 
     results.push({ item, success, invStatus, payStatus, errorMsg, totalAmt });
@@ -568,24 +567,23 @@ async function placeOrder() {
   const allSuccess = results.every(r => r.success);
   const firstResult = results[0];
 
-  // Build modal content
   const orderXMLDisplay = `<Order>\n  <ProductID>${firstResult.item.id}</ProductID>\n  <Quantity>${firstResult.item.qty}</Quantity>\n  <TotalAmount>${firstResult.totalAmt}</TotalAmount>\n</Order>`;
 
   const steps = firstResult.success ? [
-    { icon:'🏪', name:'Order Service :5000',     detail:'/place_order — XML received & saved to DB',                              status:'success', statusText:'Saved to DB'   },
-    { icon:'📦', name:'Inventory Service :5001',  detail:`/update_inventory — deducted ${firstResult.item.qty} unit(s) from DB`,  status:'success', statusText:'Stock Updated' },
-    { icon:'💳', name:'Payment Service :5002',    detail:`/process_payment — ₱${firstResult.totalAmt.toLocaleString()} saved to DB`, status:'success', statusText:'Payment Saved'},
-    { icon:'✅', name:'Order Confirmed!',          detail:'All 3 services saved data to MySQL successfully',                        status:'success', statusText:'Complete'      },
+    { icon:'🏪', name:'Order Service',     detail:'/place_order — XML received & saved to DB',                              status:'success', statusText:'Saved to DB'   },
+    { icon:'📦', name:'Inventory Service', detail:`/update_inventory — deducted ${firstResult.item.qty} unit(s) from DB`,  status:'success', statusText:'Stock Updated' },
+    { icon:'💳', name:'Payment Service',   detail:`/process_payment — ₱${firstResult.totalAmt.toLocaleString()} saved to DB`, status:'success', statusText:'Payment Saved'},
+    { icon:'✅', name:'Order Confirmed!',  detail:'All 3 services saved data to PostgreSQL successfully',                   status:'success', statusText:'Complete'      },
   ] : [
-    { icon:'🏪', name:'Order Service :5000',     detail:'/place_order — XML received',                         status:'success', statusText:'Received' },
-    { icon:'📦', name:'Inventory Service :5001',  detail: firstResult.errorMsg || 'Insufficient stock',         status:'failed',  statusText:'Failed'   },
-    { icon:'💳', name:'Payment Service :5002',    detail:'Skipped — inventory check failed',                    status:'pending', statusText:'Skipped'  },
-    { icon:'❌', name:'Order Failed',             detail: firstResult.errorMsg || 'Check your Flask terminals', status:'failed',  statusText:'Failed'   },
+    { icon:'🏪', name:'Order Service',     detail:'/place_order — XML received',                        status:'success', statusText:'Received' },
+    { icon:'📦', name:'Inventory Service', detail: firstResult.errorMsg || 'Insufficient stock',        status:'failed',  statusText:'Failed'   },
+    { icon:'💳', name:'Payment Service',   detail:'Skipped — inventory check failed',                   status:'pending', statusText:'Skipped'  },
+    { icon:'❌', name:'Order Failed',      detail: firstResult.errorMsg || 'Please try again',          status:'failed',  statusText:'Failed'   },
   ];
 
   document.getElementById('modal-title').textContent = allSuccess ? '📚 Order Placed!' : '❌ Order Failed';
   document.getElementById('modal-sub').textContent   = allSuccess
-    ? 'Data saved to MySQL via XML services ✓'
+    ? 'Data saved to PostgreSQL via XML services ✓'
     : 'One or more services returned an error';
 
   document.getElementById('modal-body').innerHTML = `
